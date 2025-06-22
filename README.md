@@ -67,6 +67,24 @@ During manual research for community APIs and scraping tools, a few projects tur
 
 These tools rely on scraping the official website. You should review War Thunder's terms of service and each project's documentation before using them.
 
+## Real-time scraping with Scrappey
+
+Thunder Insights caches responses for many hours, so it cannot deliver truly
+up‑to‑date data. If you require more real‑time results, you can try using the
+[Scrappey](https://scrappey.com/) scraping service. The included `wt_scrape.py`
+script demonstrates how to request a player profile through Scrappey's API and
+parse a few fields from the HTML page.
+
+To enable it, set the `SCRAPPEY_API_KEY` environment variable to your API key
+and run:
+
+```bash
+python wt_scrape.py <nickname>
+```
+
+Note that scraping may violate War Thunder's terms of service. Review their
+policies carefully before using this approach.
+
 ## Thunder Insights API
 
 The public Thunder Insights API exposes a variety of endpoints for

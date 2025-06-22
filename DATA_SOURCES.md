@@ -6,6 +6,7 @@ The following links were discovered while looking for player statistic APIs and 
   * A Node.js scraper that retrieves player and squadron information from War Thunder.
 * **warthunder-scraper** – <https://github.com/pim97/warthunder-scraper>
   * Uses the Scrappey service to scrape user profiles from Warthunder.com.
+  * Access to Scrappey requires an API key.
 * **Open Source API forum thread** – <https://forum.warthunder.com/t/open-source-api/72519>
   * Mentions a GitHub project called `wtpt-api`, but the repository seems to have been removed.
 
