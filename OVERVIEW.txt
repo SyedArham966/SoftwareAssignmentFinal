@@ -1,0 +1,35 @@
+This repository contains a Discord bot that retrieves player statistics for War Thunder using the public Thunder Insights API. It also includes an optional scraper example for more real‑time data via the Scrappey service.
+
+## How it works
+- The main bot is in `bot.py` and is built with `discord.py`.
+- It queries Thunder Insights endpoints to search players, fetch their stats, units and activity.
+- The bot caches player search results in memory for an hour to reduce API calls.
+- Commands available in Discord:
+  - `!player <name>` – show kills, victories and sessions.
+  - `!stats <name>` – clan tag, registration date and last update time.
+  - `!refresh <name>` – request a refresh from Thunder Insights.
+  - `!find <text>` – search for players containing text.
+  - `!units <name> [gamemode] [tier]` – list units filtered by gamemode and tier.
+  - `!active <name>` – show if a player has played in the last 30 days.
+- A scheduled task posts periodic stats updates for players listed in the `PLAYER_NAMES` environment variable.
+- `wt_scrape.py` shows how to use the Scrappey API to scrape a player's profile directly from the War Thunder website. It requires setting `SCRAPPEY_API_KEY`.
+
+## Requirements
+- Python 3.11+
+- Packages listed in `requirements.txt`:
+  - discord.py==2.3.1
+  - aiohttp
+  - beautifulsoup4
+
+## Setup
+1. Install the dependencies with `pip install -r requirements.txt`.
+2. Configure these environment variables:
+   - `DISCORD_BOT_TOKEN` – your bot token.
+   - `PLAYER_API_ENDPOINT` – base Thunder Insights URL (defaults to `https://api.thunderinsights.dk/v1`).
+   - `DISCORD_CHANNEL_ID` – ID of the Discord channel for scheduled updates.
+   - `PLAYER_NAMES` – comma‑separated list of player names for periodic updates.
+   - `UPDATE_INTERVAL` – seconds between updates (default 3600).
+   - `SCRAPPEY_API_KEY` – required only for `wt_scrape.py`.
+3. Run the bot using `python bot.py`.
+
+See `README.md` for more detailed instructions and policy notes.
