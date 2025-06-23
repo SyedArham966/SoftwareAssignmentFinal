@@ -2,6 +2,7 @@ import os
 import asyncio
 import aiohttp
 import time
+import discord
 from discord.ext import commands, tasks
 
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
@@ -10,7 +11,7 @@ CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID', '0'))
 PLAYER_NAMES = [name.strip() for name in os.getenv('PLAYER_NAMES', '').split(',') if name.strip()]
 UPDATE_INTERVAL = int(os.getenv('UPDATE_INTERVAL', '3600'))
 
-intents = commands.Intents.default()
+intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -54,12 +55,20 @@ async def fetch_player_stats(session, player_name: str):
     except Exception as e:
         print(f"Error fetching player data: {e}")
         return None
-    stats = detail.get("leaderboard", {}).get("tank_realistic", {}).get("value_total", {})
+    # Extract stats from the new API structure
+    leaderboard = detail.get("leaderboard", {})
+    tank_arcade = leaderboard.get("tank_arcade", {}).get("value_inhistory", {})
+
+    # Try tank_realistic first, fall back to tank_arcade
+    tank_realistic = leaderboard.get("tank_realistic", {}).get("value_inhistory", {})
+    stats_source = tank_realistic if tank_realistic else tank_arcade
+
     return {
         "nickname": player.get("nick"),
-        "kills": stats.get("kills_player_or_bot", {}).get("value_total"),
-        "sessions": stats.get("each_player_session", {}).get("value_total"),
-        "victories": stats.get("each_player_victories", {}).get("value_total"),
+        "kills": stats_source.get("ground_kills", {}).get("value_inhistory") or stats_source.get("air_kills", {}).get("value_inhistory"),
+        "sessions": stats_source.get("ground_spawn", {}).get("value_inhistory"),
+        "victories": stats_source.get("victories", {}).get("value_inhistory"),
+        "deaths": stats_source.get("ground_death", {}).get("value_inhistory"),
     }
 
 async def refresh_user(session, userid: int):
@@ -130,9 +139,10 @@ async def player(ctx, *, player_name: str):
     if stats:
         msg = (
             f"Stats for {stats['nickname']} -\n"
-            f"Kills: {stats['kills']}\n"
-            f"Victories: {stats['victories']}\n"
-            f"Sessions: {stats['sessions']}"
+            f"Kills: {stats['kills'] or 'N/A'}\n"
+            f"Victories: {stats['victories'] or 'N/A'}\n"
+            f"Sessions: {stats['sessions'] or 'N/A'}\n"
+            f"Deaths: {stats['deaths'] or 'N/A'}"
         )
         await ctx.send(msg)
     else:
@@ -256,3 +266,4 @@ if __name__ == '__main__':
     if not TOKEN:
         raise SystemExit('DISCORD_BOT_TOKEN not set')
     bot.run(TOKEN)
+

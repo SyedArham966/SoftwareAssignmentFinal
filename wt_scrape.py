@@ -14,7 +14,7 @@ async def scrape_profile(session: aiohttp.ClientSession, nickname: str):
         'url': target_url,
         'render_js': 'false'
     }
-    async with session.get(url, params=params, timeout=20) as resp:
+    async with session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=20)) as resp:
         resp.raise_for_status()
         html = await resp.text()
     soup = BeautifulSoup(html, 'html.parser')
@@ -39,3 +39,4 @@ async def main():
 if __name__ == '__main__':
     import asyncio
     asyncio.run(main())
+

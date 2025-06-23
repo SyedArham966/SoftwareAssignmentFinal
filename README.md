@@ -14,11 +14,13 @@ policies manually before using it in production.
 
 ## Setup
 
-1. Install dependencies:
+1. Install dependencies using either `requirements.txt` or `pyproject.toml`:
    ```bash
    pip install -r requirements.txt
+   # or
+   pip install .
    ```
-2. Set environment variables:
+2. Copy `.env.example` to `.env` and set environment variables:
    - `DISCORD_BOT_TOKEN` – your Discord bot token.
    - `PLAYER_API_ENDPOINT` – base URL for the player statistics API
      (default: `https://api.thunderinsights.dk/v1`).

@@ -1,3 +1,6 @@
 discord.py==2.3.1
 aiohttp
 beautifulsoup4
+flask
+python-dotenv
+trafilatura

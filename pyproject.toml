@@ -1,0 +1,16 @@
+[project]
+name = "war-thunder-discord-bot"
+version = "0.1.0"
+description = "Discord bot for War Thunder player statistics"
+dependencies = [
+    "discord-py>=2.3.1",
+    "aiohttp",
+    "beautifulsoup4",
+    "flask",
+    "python-dotenv",
+    "trafilatura"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
