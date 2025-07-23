@@ -1,0 +1,28 @@
+1. Reading and parsing integers
+------------------------------
+The program opens the input text file with `open()` and reads one character at a time using
+`read()`. Digits are stored in a buffer until a newline or end of file is reached. The helper
+function `str_to_int()` converts the digit sequence to an integer. The first value indicates how
+many integers remain. Memory for the array is allocated using `malloc()` once this count is
+known. Each subsequent integer is stored in the array.
+
+2. Pipe organisation
+--------------------
+Two pipes are created for every child before any `fork()`.  The arrays `p2c[][2]` and `c2p[][2]`
+store the file descriptors for parent‑to‑child and child‑to‑parent communication. After
+`fork()` each child closes every pipe that does not belong to it, keeping only one read end and
+one write end.
+
+3. Avoiding blocking reads
+--------------------------
+Each child expects a single integer.  The parent writes the number and immediately closes its
+write end.  The child therefore sees end‑of‑file after it reads the integer and can safely exit
+without blocking.  Similarly, the parent closes its read end after obtaining the result from the
+child.
+
+4. Tracking child termination
+-----------------------------
+The parent stores every child PID in the `pids` array.  `wait()` returns the PID of the process
+that finished.  A search through `pids` finds the index of that PID so the parent reads the
+result from the correct pipe.  A short status message is then assembled and written to
+standard output using `write()`.
