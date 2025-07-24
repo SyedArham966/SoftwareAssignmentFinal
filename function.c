@@ -37,38 +37,43 @@ int read_numbers(const char *filename, int **out_numbers) {
 
     char ch;
     char buf[32];
-    int idx = 0;
+    char *buf_ptr = buf;
     int count = -1;
     int capacity = 0;
     int *numbers = NULL;
+    int *num_ptr = NULL;
     while (read(fd, &ch, 1) == 1) {
         if (ch == '\n') {
-            if (idx > 0) {
-                int val = str_to_int(buf, idx);
+            int len = buf_ptr - buf;
+            if (len > 0) {
+                int val = str_to_int(buf, len);
                 if (count == -1) {
                     count = val;
                     capacity = count;
                     numbers = malloc(sizeof(int) * capacity);
                     if (!numbers) { close(fd); return -1; }
+                    num_ptr = numbers;
                 } else {
-                    numbers[capacity - count] = val;
+                    *num_ptr++ = val;
                     count--;
                 }
-                idx = 0;
+                buf_ptr = buf;
             }
         } else {
-            buf[idx++] = ch;
+            *buf_ptr++ = ch;
         }
     }
-    if (idx > 0) {
-        int val = str_to_int(buf, idx);
+    int len = buf_ptr - buf;
+    if (len > 0) {
+        int val = str_to_int(buf, len);
         if (count == -1) {
             count = val;
             capacity = count;
             numbers = malloc(sizeof(int) * capacity);
             if (!numbers) { close(fd); return -1; }
+            num_ptr = numbers;
         } else {
-            numbers[capacity - count] = val;
+            *num_ptr++ = val;
             count--;
         }
     }
